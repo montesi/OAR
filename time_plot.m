@@ -23,6 +23,7 @@ D=angles.D;
 beta=angles.beta;
 delta=angles.delta;
 gamma=angles.gamma;
+VR=angles.VR;
 a1=(beta+delta)/2;
 a2=(beta-delta)/2;
 %VR=0;
@@ -74,11 +75,11 @@ for ib=1:nb %correct for entry in the lithosphere
         il=find(ts>te(ib));
         zs(ib,il)=ze;
         if tb(ib)>thmid
-            xs(ib,il)=(ts(il)-te(ib))*cos(gamma)+xe;
-            ys(ib,il)=(ts(il)-te(ib))*sin(gamma)+ye;
+            xs(ib,il)=(ts(il)-te(ib))*cos(gamma)*(1-VR)+xe;
+            ys(ib,il)=(ts(il)-te(ib))*sin(gamma)*(1-VR)+ye;
         else
-            xs(ib,il)=-(ts(il)-te(ib))*cos(gamma)+xe;
-            ys(ib,il)=-(ts(il)-te(ib))*sin(gamma)+ye;
+            xs(ib,il)=-(ts(il)-te(ib))*cos(gamma)*(1+VR)+xe;
+            ys(ib,il)=-(ts(il)-te(ib))*sin(gamma)*(1+VR)+ye;
         end
     end
 end

@@ -22,10 +22,10 @@ function varargout = OAR_GUI(varargin)
 
 % Edit the above text to modify the response to help OAR_GUI
 
-% Last Modified by GUIDE v2.5 28-Nov-2005 11:07:51
+% Last Modified by GUIDE v2.5 30-Nov-2016 18:23:17
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
                    'gui_OpeningFcn', @OAR_GUI_OpeningFcn, ...
@@ -700,16 +700,17 @@ clf;
 %setup sampling points
 nzs=7;
 zmin=0.0;zmax=1;
-xmax=1;
 thmax=(handles.angles.beta+handles.angles.delta)/2; %ap
+xmax=tan(min(pi/4,thmax-pi/8/nzs));
 if handles.is_symm
     nxs=nzs;
     xmin=0;
     thmin=0;
 else
-    nxs=2*nzs;
-    xmin=-xmax;    
+    nxs=2*nzs;    
     thmin=-(handles.angles.beta-handles.angles.delta)/2; %am
+    %xmin=-xmax;
+    xmin=tan(max(-pi/4,thmin+pi/8/nzs));
 end
 xb=linspace(xmin,xmax,2*nxs);
 zb=xb*0+1;
@@ -758,3 +759,31 @@ end
 
 
 
+
+
+
+function sp_ET_Callback(hObject, eventdata, handles)
+% hObject    handle to sp_ET (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of sp_ET as text
+%        str2double(get(hObject,'String')) returns contents of sp_ET as a double
+ap=(pi/2)-str2num(get(handles.sp_ET,'string'))/handles.angles.mult;
+am=str2num(get(handles.am_ET,'string'))/handles.angles.mult;
+handles.angles.beta=ap+am;
+handles.angles.delta=ap-am;
+handles=set_angles(handles);
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function sp_ET_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sp_ET (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
